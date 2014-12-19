@@ -2,6 +2,11 @@
 
 return array(
     'tww-saml' => array(
+        'storage' => array(
+            'type' => 'zend_session',
+            'container_class' => 'Zend\\Session\\Container',
+            'container_name' => 'session',
+        ),
         'settings' => array(
             // Log and track debugging data
             'debug' => false,

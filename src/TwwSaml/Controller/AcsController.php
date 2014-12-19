@@ -16,15 +16,20 @@ class AcsController extends AbstractActionController
 
         $errors = $auth->getErrors();
         if (!empty($errors)) {
-            print_r('<p>'.implode(', ', $errors).'</p>');
-            exit();
+            throw new \Exception('Errors returned from SAML library: '.implode(', ', $errors));
         }
 
         if (!$auth->isAuthenticated()) {
             throw new \Exception('Authentication failed.');
         }
 
-        $_SESSION['samlUserdata'] = $auth->getAttributes();
+        if (isset($config['tww-saml']['storage']) && $config['tww-saml']['storage']['type'] == 'zend_session') {
+            $className = $config['tww-saml']['storage']['container_class'];
+            $container = new $className($config['tww-saml']['storage']['container_name']);
+            $container->samlUserdata = $auth->getAttributes();
+        } else {
+            $_SESSION['samlUserdata'] = $auth->getAttributes();
+        }
         if (isset($_POST['RelayState']) && (strlen($_POST['RelayState']) > 0) && (\OneLogin_Saml2_Utils::getSelfURL() != $_POST['RelayState'])) {
             return $this->redirect()->toUrl($_POST['RelayState']);
         } else {
