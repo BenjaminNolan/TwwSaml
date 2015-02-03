@@ -30,7 +30,8 @@ class AcsController extends AbstractActionController
         } else {
             $_SESSION['samlUserdata'] = $auth->getAttributes();
         }
-        if (isset($_POST['RelayState']) && (strlen($_POST['RelayState']) > 0) && (\OneLogin_Saml2_Utils::getSelfURL() != $_POST['RelayState'])) {
+
+        if (isset($config['tww-saml']['enable_relay_state']) && $config['tww-saml']['enable_relay_state'] && isset($_POST['RelayState']) && (strlen($_POST['RelayState']) > 0) && (\OneLogin_Saml2_Utils::getSelfURL() != $_POST['RelayState'])) {
             return $this->redirect()->toUrl($_POST['RelayState']);
         } else {
             return $this->redirect()->toRoute('home');
