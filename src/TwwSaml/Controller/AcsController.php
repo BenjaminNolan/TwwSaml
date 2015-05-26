@@ -27,8 +27,10 @@ class AcsController extends AbstractActionController
             $className = $config['tww-saml']['storage']['container_class'];
             $container = new $className($config['tww-saml']['storage']['container_name']);
             $container->samlUserdata = $auth->getAttributes();
+            $container->samlResponse = (array_key_exists('SAMLResponse', $_POST) ? $_POST['SAMLResponse'] : null);
         } else {
             $_SESSION['samlUserdata'] = $auth->getAttributes();
+            $_SESSION['samlResponse'] = (array_key_exists('SAMLResponse', $_POST) ? $_POST['SAMLResponse'] : null);
         }
 
         if (isset($config['tww-saml']['enable_relay_state']) && $config['tww-saml']['enable_relay_state'] && isset($_POST['RelayState']) && (strlen($_POST['RelayState']) > 0) && (\OneLogin_Saml2_Utils::getSelfURL() != $_POST['RelayState'])) {
